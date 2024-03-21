@@ -22,7 +22,7 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
     <link rel="stylesheet" href="../../../css/styles-computer.css">
     <link rel="stylesheet" href="../../../css/styles-responsive.css">
     <link rel="shortcut icon" href="../../../img/favicon-jo-2024.ico" type="image/x-icon">
-    <title>Liste des Sports - Jeux Olympiques 2024</title>
+    <title>Liste des Resultats - Jeux Olympiques 2024</title>
     <style>
         /* Ajoutez votre style CSS ici */
         .action-buttons {
@@ -40,7 +40,7 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-
+        
         .action-buttons button:hover {
             background-color: #d7c378;
             color: #1b1b1b;
@@ -68,9 +68,9 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </nav>
     </header>
     <main>
-        <h1>Liste des Sports</h1>
+        <h1>Liste des Résultats </h1>
         <div class="action-buttons">
-            <button onclick="openAddSportForm()">Ajouter un Sport</button>
+            <button onclick="openAddResultsForm()">Ajouter un Résultat</button>
             <!-- Autres boutons... -->
         </div>
         <!-- Tableau des sports -->
@@ -79,27 +79,47 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
 
         try {
             // Requête pour récupérer la liste des sports depuis la base de données
-            $query = "SELECT * FROM SPORT ORDER BY nom_sport";
+            $query = "SELECT
+            PARTICIPER.*,
+            ATHLETE.nom_athlete,
+            ATHLETE.prenom_athlete,
+            PAYS.nom_pays,
+            EPREUVE.nom_epreuve,
+            SPORT.nom_sport
+            FROM 
+            PARTICIPER
+            INNER JOIN ATHLETE ON PARTICIPER.id_athlete = ATHLETE.id_athlete
+            INNER JOIN PAYS ON ATHLETE.id_pays = PAYS.id_pays
+            INNER JOIN EPREUVE ON PARTICIPER.id_epreuve = EPREUVE.id_epreuve
+            INNER JOIN SPORT ON EPREUVE.id_sport = SPORT.id_sport
+            ORDER BY ATHLETE.nom_athlete, EPREUVE.nom_epreuve";
+
             $statement = $connexion->prepare($query);
             $statement->execute();
 
+
             // Vérifier s'il y a des résultats
             if ($statement->rowCount() > 0) {
-                echo "<table><tr><th>Sport</th><th>Modifier</th><th>Supprimer</th></tr>";
+                echo "<table><tr><th>Athlete</th><th>Pays</th><th>Epreuve</th><th>Sport</th><th>Résultat</th><th>Modifier</th><th>Supprimer</th></tr>";
 
                 // Afficher les données dans un tableau
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>";
                     // Assainir les données avant de les afficher
+                    echo "<td>" . htmlspecialchars($row['prenom_athlete'] . ' ' . $row['nom_athlete']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['nom_pays']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['nom_epreuve']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['nom_sport']) . "</td>";
-                    echo "<td><button onclick='openModifySportForm({$row['id_sport']})'>Modifier</button></td>";
-                    echo "<td><button onclick='deleteSportConfirmation({$row['id_sport']})'>Supprimer</button></td>";
+                    echo "<td>" . htmlspecialchars($row['resultat']) . "</td>";
+                    echo "<td><button onclick='openModifyResultsForm({$row['id_athlete']}, {$row['id_epreuve']})'>Modifier</button></td>";
+                    echo "<td><button onclick='deleteResultsConfirmation({$row['id_athlete']}, {$row['id_epreuve']})'>Supprimer</button></td>";
+
                     echo "</tr>";
                 }
 
                 echo "</table>";
             } else {
-                echo "<p>Aucun sport trouvé.</p>";
+                echo "<p>Aucun résultat trouvé.</p>";
             }
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
@@ -120,27 +140,28 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </figure>
     </footer>
     <script>
-        function openAddSportForm() {
-            // Ouvrir une fenêtre pop-up avec le formulaire de modification
-            // L'URL contien un paramètre "id"
-            window.location.href = 'add-sport.php';
-        }
+    function openAddResultsForm() {
+        // Ouvrir une fenêtre pop-up avec le formulaire de modification
+        // L'URL contient un paramètre "id"
+        window.location.href = 'add-results.php';
+    }
 
-        function openModifySportForm(id_sport) {
-            // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un sport
+    function openModifyResultsForm(id_athlete, id_epreuve) {
+        // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un sport
+        // alert(id_sport);
+        window.location.href = 'modify-results.php?id_athlete=' + id_athlete + '&id_epreuve=' + id_epreuve;
+    }
+
+    function deleteResultsConfirmation(id_athlete, id_epreuve) {
+        // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
+        if (confirm("Êtes-vous sûr de vouloir supprimer ce resultat?")) {
+            // Ajoutez ici le code pour la suppression du sport
             // alert(id_sport);
-            window.location.href = 'modify-sport.php?id_sport=' + id_sport;
+            window.location.href = 'delete-results.php?id_athlete=' + id_athlete + '&id_epreuve=' + id_epreuve;
         }
+    }
+</script>
 
-        function deleteSportConfirmation(id_sport) {
-            // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce sport?")) {
-                // Ajoutez ici le code pour la suppression du sport
-                // alert(id_sport);
-                window.location.href = 'delete-sport.php?id_sport=' + id_sport;
-            }
-        }
-    </script>
 </body>
 
 </html>

@@ -8,8 +8,8 @@ if (!isset($_SESSION['login'])) {
     exit();
 }
 
-// Vérifiez si l'ID du sport est fourni dans l'URL
-if (!isset($_GET['id_pays'])) {
+// Vérifiez si l'ID du genre est fourni dans l'URL
+if (!isset($_GET['id_genre'])) {
     $_SESSION['error'] = "ID du genre manquant.";
     header("Location: manage-gender.php");
     exit();
@@ -17,7 +17,7 @@ if (!isset($_GET['id_pays'])) {
 
 $id_genre = filter_input(INPUT_GET, 'id_genre', FILTER_VALIDATE_INT);
 
-// Vérifiez si l'ID du pays est un entier valide
+// Vérifiez si l'ID du genre est un entier valide
 if (!$id_genre && $id_genre !== 0) {
     $_SESSION['error'] = "ID du genre invalide.";
     header("Location: manage-gender.php");
@@ -29,9 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Assurez-vous d'obtenir des données sécurisées et filtrées
     $nomGenre = filter_input(INPUT_POST, 'nomGenre', FILTER_SANITIZE_STRING);
 
-    // Vérifiez si le nom du Pays est vide
-    if (empty($nomPays)) {
-        $_SESSION['error'] = "Le nom du Genre ne peut pas être vide.";
+    // Vérifiez si le nom du sport est vide
+    if (empty($nomGenre)) {
+        $_SESSION['error'] = "Le nom du genre ne peut pas être vide.";
         header("Location: modify-gender.php?id_genre=$id_genre");
         exit();
     }
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($statementCheck->rowCount() > 0) {
             $_SESSION['error'] = "Le genre existe déjà.";
-            header("Location: modify-gender.php?id_genre=$id_genre");
+            header("Location: modify-gender.php?id_sport=$id_sport");
             exit();
         }
 
@@ -75,13 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Récupérez les informations du sport pour affichage dans le formulaire
 try {
-    $queryGender = "SELECT nom_genre FROM GENRE WHERE id_genre = :idGenre";
+    $queryGenre = "SELECT nom_genre FROM GENRE WHERE id_genre = :idGenre";
     $statementGenre = $connexion->prepare($queryGenre);
     $statementGenre->bindParam(":idGenre", $id_genre, PDO::PARAM_INT);
     $statementGenre->execute();
 
     if ($statementGenre->rowCount() > 0) {
-        $pays = $statementPays->fetch(PDO::FETCH_ASSOC);
+        $genre = $statementGenre->fetch(PDO::FETCH_ASSOC);
     } else {
         $_SESSION['error'] = "Genre non trouvé.";
         header("Location: manage-gender.php");
@@ -115,15 +115,15 @@ try {
         <nav>
             <!-- Menu vers les pages sports, events, et results -->
             <ul class="menu">
-                <li><a href="../admin.php">Accueil Administration</a></li>
-                <li><a href="manage-sports.php">Gestion Sports</a></li>
-                <li><a href="manage-places.php">Gestion Lieux</a></li>
-                <li><a href="manage-events.php">Gestion Calendrier</a></li>
-                <li><a href="manage-countries.php">Gestion Pays</a></li>
-                <li><a href="manage-gender.php">Gestion Genres</a></li>
-                <li><a href="manage-athletes.php">Gestion Athlètes</a></li>
-                <li><a href="manage-results.php">Gestion Résultats</a></li>
-                <li><a href="../../logout.php">Déconnexion</a></li>
+            <li><a href="../admin.php">Accueil Administration</a></li>
+                <li><a href="../admin-sports/manage-sports.php">Gestion Sports</a></li>
+                <li><a href="../admin-places/manage-places.php">Gestion Lieux</a></li>
+                <li><a href="../admin-events/manage-events.php">Gestion Calendrier</a></li>
+                <li><a href="../admin-countries/manage-countries.php">Gestion Pays</a></li>
+                <li><a href="../admin-gender/manage-gender.php">Gestion Genres</a></li>
+                <li><a href="../admin-athletes/manage-athletes.php">Gestion Athlètes</a></li>
+                <li><a href="../admin-results/manage-results.php">Gestion Résultats</a></li>
+                <li><a href="../logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
@@ -136,14 +136,14 @@ try {
         }
         ?>
         <form action="modify-gender.php?id_genre=<?php echo $id_genre; ?>" method="post"
-            onsubmit="return confirm('Êtes-vous sûr de vouloir modifier ce Gennre?')">
+            onsubmit="return confirm('Êtes-vous sûr de vouloir modifier ce genre?')">
             <label for=" nomGenre">Nom du Genre :</label>
             <input type="text" name="nomGenre" id="nomGenre"
                 value="<?php echo htmlspecialchars($genre['nom_genre']); ?>" required>
             <input type="submit" value="Modifier le Genre">
         </form>
         <p class="paragraph-link">
-            <a class="link-home" href="manage-gender.php">Retour à la gestion des genres</a>
+            <a class="link-home" href="manage-gender.php">Retour à la gestion des sports</a>
         </p>
     </main>
     <footer>

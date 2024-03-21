@@ -22,8 +22,8 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
     <link rel="stylesheet" href="../../../css/styles-computer.css">
     <link rel="stylesheet" href="../../../css/styles-responsive.css">
     <link rel="shortcut icon" href="../../../img/favicon-jo-2024.ico" type="image/x-icon">
-    <title>Liste des Sports - Jeux Olympiques 2024</title>
-    <style>
+    <title>Liste des Lieux - Jeux Olympiques 2024</title>
+    <style> 
         /* Ajoutez votre style CSS ici */
         .action-buttons {
             display: flex;
@@ -68,9 +68,9 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </nav>
     </header>
     <main>
-        <h1>Liste des Sports</h1>
+        <h1>Liste des Lieux</h1>
         <div class="action-buttons">
-            <button onclick="openAddSportForm()">Ajouter un Sport</button>
+            <button onclick="openAddPlacesForm()">Ajouter un Lieu</button>
             <!-- Autres boutons... -->
         </div>
         <!-- Tableau des sports -->
@@ -79,27 +79,30 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
 
         try {
             // Requête pour récupérer la liste des sports depuis la base de données
-            $query = "SELECT * FROM SPORT ORDER BY nom_sport";
+            $query = "SELECT * FROM LIEU ORDER BY nom_lieu";
             $statement = $connexion->prepare($query);
             $statement->execute();
 
             // Vérifier s'il y a des résultats
             if ($statement->rowCount() > 0) {
-                echo "<table><tr><th>Sport</th><th>Modifier</th><th>Supprimer</th></tr>";
+                echo "<table><tr><th>Lieu</th><th>Adresse</th><th>Ville</th><th>Code Postal</th><th>Modifier</th><th>Supprimer</th></tr>";
 
                 // Afficher les données dans un tableau
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>";
                     // Assainir les données avant de les afficher
-                    echo "<td>" . htmlspecialchars($row['nom_sport']) . "</td>";
-                    echo "<td><button onclick='openModifySportForm({$row['id_sport']})'>Modifier</button></td>";
-                    echo "<td><button onclick='deleteSportConfirmation({$row['id_sport']})'>Supprimer</button></td>";
+                    echo "<td>" . htmlspecialchars($row['nom_lieu']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['adresse_lieu']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['ville_lieu']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['cp_lieu']) . "</td>";
+                    echo "<td><button onclick='openModifyPlacesForm({$row['id_lieu']})'>Modifier</button></td>";
+                    echo "<td><button onclick='deletePlacesConfirmation({$row['id_lieu']})'>Supprimer</button></td>";
                     echo "</tr>";
                 }
 
                 echo "</table>";
             } else {
-                echo "<p>Aucun sport trouvé.</p>";
+                echo "<p>Aucun lieu trouvé.</p>";
             }
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
@@ -112,7 +115,7 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         <p class="paragraph-link">
             <a class="link-home" href="../admin.php">Accueil administration</a>
         </p>
-
+    
     </main>
     <footer>
         <figure>
@@ -120,27 +123,27 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </figure>
     </footer>
     <script>
-        function openAddSportForm() {
+        function openAddPlacesForm() {
             // Ouvrir une fenêtre pop-up avec le formulaire de modification
             // L'URL contien un paramètre "id"
-            window.location.href = 'add-sport.php';
+            window.location.href = 'add-places.php';
         }
 
-        function openModifySportForm(id_sport) {
+        function openModifyPlacesForm(id_lieu) {
             // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un sport
-            // alert(id_sport);
-            window.location.href = 'modify-sport.php?id_sport=' + id_sport;
+            // alert(id_lieu);
+            window.location.href = 'modify-places.php?id_lieu=' + id_lieu;
         }
 
-        function deleteSportConfirmation(id_sport) {
+        function deletePlacesConfirmation(id_lieu) {
             // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce sport?")) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
                 // Ajoutez ici le code pour la suppression du sport
-                // alert(id_sport);
-                window.location.href = 'delete-sport.php?id_sport=' + id_sport;
+                // alert(id_lieu);
+                window.location.href = 'delete-places.php?id_lieu=' + id_lieu;
             }
         }
     </script>
 </body>
-
+ 
 </html>

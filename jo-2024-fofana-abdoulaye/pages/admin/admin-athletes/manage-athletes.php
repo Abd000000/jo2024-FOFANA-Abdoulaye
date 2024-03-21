@@ -68,38 +68,44 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </nav>
     </header>
     <main>
-        <h1>Liste des Sports</h1>
+        <h1>Liste des Athletes</h1>
         <div class="action-buttons">
-            <button onclick="openAddSportForm()">Ajouter un Sport</button>
+            <button onclick="openAddAthletesForm()">Ajouter un Athlete</button>
             <!-- Autres boutons... -->
         </div>
-        <!-- Tableau des sports -->
+        <!-- Tableau des Athletes -->
         <?php
         require_once("../../../database/database.php");
 
         try {
-            // Requête pour récupérer la liste des sports depuis la base de données
-            $query = "SELECT * FROM SPORT ORDER BY nom_sport";
+            // Requête pour récupérer la liste des Athletes depuis la base de données
+            $query = "SELECT A.*, P.nom_pays, G.nom_genre FROM ATHLETE A
+                        INNER JOIN PAYS P ON A.id_pays = P.id_pays
+                        INNER JOIN GENRE G ON A.id_genre = G.id_genre
+                        ORDER BY A.nom_athlete";
             $statement = $connexion->prepare($query);
             $statement->execute();
 
             // Vérifier s'il y a des résultats
             if ($statement->rowCount() > 0) {
-                echo "<table><tr><th>Sport</th><th>Modifier</th><th>Supprimer</th></tr>";
+                echo "<table><tr><th>Nom</th><th>Prénom</th><th>Pays</th><th>Genre</th><th>Modifier</th><th>Supprimer</th></tr>";
 
                 // Afficher les données dans un tableau
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>";
                     // Assainir les données avant de les afficher
-                    echo "<td>" . htmlspecialchars($row['nom_sport']) . "</td>";
-                    echo "<td><button onclick='openModifySportForm({$row['id_sport']})'>Modifier</button></td>";
-                    echo "<td><button onclick='deleteSportConfirmation({$row['id_sport']})'>Supprimer</button></td>";
+                    echo "<td>" . htmlspecialchars($row['nom_athlete']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['prenom_athlete']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['nom_pays']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['nom_genre']) . "</td>";
+                    echo "<td><button onclick='openModifyAthletesForm({$row['id_athlete']})'>Modifier</button></td>";
+                    echo "<td><button onclick='deleteAthletesConfirmation({$row['id_athlete']})'>Supprimer</button></td>";
                     echo "</tr>";
                 }
 
                 echo "</table>";
             } else {
-                echo "<p>Aucun sport trouvé.</p>";
+                echo "<p>Aucun athlete trouvé.</p>";
             }
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
@@ -120,24 +126,24 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </figure>
     </footer>
     <script>
-        function openAddSportForm() {
+        function openAddAthletesForm() {
             // Ouvrir une fenêtre pop-up avec le formulaire de modification
             // L'URL contien un paramètre "id"
-            window.location.href = 'add-sport.php';
+            window.location.href = 'add-athletes.php';
         }
 
-        function openModifySportForm(id_sport) {
-            // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un sport
-            // alert(id_sport);
-            window.location.href = 'modify-sport.php?id_sport=' + id_sport;
+        function openModifyAthletesForm(id_athlete) {
+            // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un athletes
+            // alert(id_athlete);
+            window.location.href = 'modify-athletes.php?id_athlete=' + id_athlete;
         }
 
-        function deleteSportConfirmation(id_sport) {
-            // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce sport?")) {
-                // Ajoutez ici le code pour la suppression du sport
-                // alert(id_sport);
-                window.location.href = 'delete-sport.php?id_sport=' + id_sport;
+        function deleteAthletesConfirmation(id_athlete) {
+            // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un athletes
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce athletes?")) {
+                // Ajoutez ici le code pour la suppression du athletes
+                // alert(id_athlete);
+                window.location.href = 'delete-athletes.php?id_athlete=' + id_athlete;
             }
         }
     </script>

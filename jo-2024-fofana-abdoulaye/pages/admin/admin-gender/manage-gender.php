@@ -56,14 +56,14 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
             <!-- Menu vers les pages sports, events, et results -->
             <ul class="menu">
             <li><a href="../admin.php">Accueil Administration</a></li>
-                <li><a href="manage-sports.php">Gestion Sports</a></li>
-                <li><a href="manage-places.php">Gestion Lieux</a></li>
-                <li><a href="manage-events.php">Gestion Calendrier</a></li>
-                <li><a href="manage-countries.php">Gestion Pays</a></li>
-                <li><a href="manage-gender.php">Gestion Genres</a></li>
-                <li><a href="manage-athletes.php">Gestion Athlètes</a></li>
-                <li><a href="manage-results.php">Gestion Résultats</a></li>
-                <li><a href="../../logout.php">Déconnexion</a></li>
+                <li><a href="../admin-sports/manage-sports.php">Gestion Sports</a></li>
+                <li><a href="../admin-places/manage-places.php">Gestion Lieux</a></li>
+                <li><a href="../admin-events/manage-events.php">Gestion Calendrier</a></li>
+                <li><a href="../admin-countries/manage-countries.php">Gestion Pays</a></li>
+                <li><a href="../admin-gender/manage-gender.php">Gestion Genres</a></li>
+                <li><a href="../admin-athletes/manage-athletes.php">Gestion Athlètes</a></li>
+                <li><a href="../admin-results/manage-results.php">Gestion Résultats</a></li>
+                <li><a href="../logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
@@ -134,7 +134,7 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
 
         function deleteGenderConfirmation(id_genre) {
             // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce genre?")) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce sport?")) {
                 // Ajoutez ici le code pour la suppression du sport
                 // alert(id_sport);
                 window.location.href = 'delete-gender.php?id_genre=' + id_genre;
@@ -144,5 +144,3 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
 </body>
 
 </html>
-
-sport

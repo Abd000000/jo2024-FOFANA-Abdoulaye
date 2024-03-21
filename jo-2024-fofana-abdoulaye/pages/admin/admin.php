@@ -41,7 +41,7 @@ ini_set("display_errors", 1);
                 <li><a href="./admin-gender/manage-gender.php">Gestion Genres</a></li>
                 <li><a href="./admin-athletes/manage-athletes.php">Gestion Athlètes</a></li>
                 <li><a href="./admin-results/manage-results.php">Gestion Résultats</a></li>
-                <li><a href="../../logout.php">Déconnexion</a></li>
+                <li><a href="../logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
@@ -56,7 +56,7 @@ ini_set("display_errors", 1);
             <a class="link-category" href="./admin-places/manage-places.php">Gestion Lieux</a>
             <a class="link-category" href="./admin-events/manage-events.php">Gestion Calendrier</a>
             <a class="link-category" href="./admin-countries/manage-countries.php">Gestion Pays</a>
-            <a class="link-category" href="./admin-countries/manage-countries.php">Gestion Genres</a>
+            <a class="link-category" href="./admin-gender/manage-gender.php">Gestion Genres</a>
             <a class="link-category" href="./admin-athletes/manage-athletes.php">Gestion Athlètes</a>
             <a class="link-category" href="./admin-results/manage-results.php">Gestion Résultats</a>
         </p>

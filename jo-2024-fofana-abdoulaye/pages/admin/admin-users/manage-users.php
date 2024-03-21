@@ -22,7 +22,7 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
     <link rel="stylesheet" href="../../../css/styles-computer.css">
     <link rel="stylesheet" href="../../../css/styles-responsive.css">
     <link rel="shortcut icon" href="../../../img/favicon-jo-2024.ico" type="image/x-icon">
-    <title>Liste des Sports - Jeux Olympiques 2024</title>
+    <title>Liste des Utilisateurs - Jeux Olympiques 2024</title>
     <style>
         /* Ajoutez votre style CSS ici */
         .action-buttons {
@@ -56,50 +56,53 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
             <!-- Menu vers les pages sports, events, et results -->
             <ul class="menu">
             <li><a href="../admin.php">Accueil Administration</a></li>
-                <li><a href="manage-sports.php">Gestion Sports</a></li>
-                <li><a href="manage-places.php">Gestion Lieux</a></li>
-                <li><a href="manage-events.php">Gestion Calendrier</a></li>
-                <li><a href="manage-countries.php">Gestion Pays</a></li>
-                <li><a href="manage-gender.php">Gestion Genres</a></li>
-                <li><a href="manage-athletes.php">Gestion Athlètes</a></li>
-                <li><a href="manage-results.php">Gestion Résultats</a></li>
-                <li><a href="../../logout.php">Déconnexion</a></li>
+                <li><a href="../admin-sports/manage-sports.php">Gestion Sports</a></li>
+                <li><a href="../admin-places/manage-places.php">Gestion Lieux</a></li>
+                <li><a href="../admin-events/manage-events.php">Gestion Calendrier</a></li>
+                <li><a href="../admin-countries/manage-countries.php">Gestion Pays</a></li>
+                <li><a href="../admin-gender/manage-gender.php">Gestion Genres</a></li>
+                <li><a href="../admin-athletes/manage-athletes.php">Gestion Athlètes</a></li>
+                <li><a href="../admin-results/manage-results.php">Gestion Résultats</a></li>
+                <li><a href="../logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
     <main>
-        <h1>Liste des Sports</h1>
+        <h1>Liste des UtilisateurS</h1>
         <div class="action-buttons">
-            <button onclick="openAddSportForm()">Ajouter un Sport</button>
+            <button onclick="openAddUsersForm()">Ajouter un utilisateur</button>
             <!-- Autres boutons... -->
         </div>
-        <!-- Tableau des sports -->
+        <!-- Tableau des utilisateur -->
         <?php
         require_once("../../../database/database.php");
 
         try {
             // Requête pour récupérer la liste des sports depuis la base de données
-            $query = "SELECT * FROM SPORT ORDER BY nom_sport";
+            $query = "SELECT * FROM UTILISATEUR ORDER BY nom_utilisateur";
             $statement = $connexion->prepare($query);
             $statement->execute();
 
             // Vérifier s'il y a des résultats
             if ($statement->rowCount() > 0) {
-                echo "<table><tr><th>Sport</th><th>Modifier</th><th>Supprimer</th></tr>";
+                echo "<table><tr><th>Nom</th><th>Prenom</th><th>Login</th><th>Mot de Passe</th><th>Modifier</th><th>Supprimer</th></tr>";
 
                 // Afficher les données dans un tableau
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>";
                     // Assainir les données avant de les afficher
-                    echo "<td>" . htmlspecialchars($row['nom_sport']) . "</td>";
-                    echo "<td><button onclick='openModifySportForm({$row['id_sport']})'>Modifier</button></td>";
-                    echo "<td><button onclick='deleteSportConfirmation({$row['id_sport']})'>Supprimer</button></td>";
+                    echo "<td>" . htmlspecialchars($row['nom_utilisateur']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['prenom_utilisateur']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['login']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['password']) . "</td>";
+                    echo "<td><button onclick='openModifyUsersForm({$row['id_utilisateur']})'>Modifier</button></td>";
+                    echo "<td><button onclick='deleteUsersConfirmation({$row['id_utilisateur']})'>Supprimer</button></td>";
                     echo "</tr>";
                 }
 
                 echo "</table>";
             } else {
-                echo "<p>Aucun sport trouvé.</p>";
+                echo "<p>Aucun utilisateur trouvé.</p>";
             }
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
@@ -120,24 +123,24 @@ $prenom_utilisateur = $_SESSION['nom_utilisateur'];
         </figure>
     </footer>
     <script>
-        function openAddSportForm() {
+        function openAddUsersForm() {
             // Ouvrir une fenêtre pop-up avec le formulaire de modification
             // L'URL contien un paramètre "id"
-            window.location.href = 'add-sport.php';
+            window.location.href = 'add-user.php';
         }
 
-        function openModifySportForm(id_sport) {
+        function openModifyUsersForm(id_utilisateur) {
             // Ajoutez ici le code pour afficher un formulaire stylisé pour modifier un sport
             // alert(id_sport);
-            window.location.href = 'modify-sport.php?id_sport=' + id_sport;
+            window.location.href = 'modify-user.php?id_utilisateur=' + id_utilisateur;
         }
 
-        function deleteSportConfirmation(id_sport) {
+        function deleteUsersConfirmation(id_utilisateur) {
             // Ajoutez ici le code pour afficher une fenêtre de confirmation pour supprimer un sport
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce sport?")) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur?")) {
                 // Ajoutez ici le code pour la suppression du sport
                 // alert(id_sport);
-                window.location.href = 'delete-sport.php?id_sport=' + id_sport;
+                window.location.href = 'delete-user.php?id_utilisateur=' + id_utilisateur;
             }
         }
     </script>

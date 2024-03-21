@@ -9,29 +9,29 @@ if (!isset($_SESSION['login'])) {
 }
 
 // Vérifiez si l'ID du sport est fourni dans l'URL
-if (!isset($_GET['id_genre'])) {
-    $_SESSION['error'] = "ID du genre manquant.";
-    header("Location: manage-gender.php");
+if (!isset($_GET['id_epreuve'])) {
+    $_SESSION['error'] = "ID de l'épreuve manquante.";
+    header("Location: manage-events.php");
     exit();
 } else {
-    $id_genre = filter_input(INPUT_GET, 'id_genre', FILTER_VALIDATE_INT);
-    // Vérifiez si l'ID du genre est un entier valide
-    if (!$id_genre && $id_genre !== 0) {
-        $_SESSION['error'] = "ID du genre invalide.";
-        header("Location: manage-gender.php");
+    $id_epreuve = filter_input(INPUT_GET, 'id_epreuve', FILTER_VALIDATE_INT);
+    // Vérifiez si l'ID du sport est un entier valide
+    if (!$id_epreuve && $id_epreuve !== 0) {
+        $_SESSION['error'] = "ID de l'épreuve invalide.";
+        header("Location: manage-events.php");
         exit();
     } else {
         try {
             // Récupérez l'ID de l'œuvre à supprimer depuis la requête GET
-            $id_genre = $_GET['id_genre'];
+            $id_epreuve = $_GET['id_epreuve'];
             // Préparez la requête SQL pour supprimer l'œuvre
-            $sql = "DELETE FROM GENRE WHERE id_genre = :id_genre";
+            $sql = "DELETE FROM EPREUVE WHERE id_epreuve = :id_epreuve";
             // Exécutez la requête SQL avec le paramètre
             $statement = $connexion->prepare($sql);
-            $statement->bindParam(':id_genre', $id_genre, PDO::PARAM_INT);
+            $statement->bindParam(':id_epreuve', $id_epreuve, PDO::PARAM_INT);
             $statement->execute();
             // Redirigez vers la page précédente après la suppression
-            header('Location: manage-gender.php');
+            header('Location: manage-events.php');
         } catch (PDOException $e) {
             echo 'Erreur : ' . $e->getMessage();
         }
@@ -41,5 +41,3 @@ if (!isset($_GET['id_genre'])) {
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 ?>
-
-sport

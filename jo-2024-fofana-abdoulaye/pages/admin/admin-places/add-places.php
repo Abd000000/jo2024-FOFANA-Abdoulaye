@@ -11,47 +11,54 @@ if (!isset($_SESSION['login'])) {
 // Vérifiez si le formulaire est soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Assurez-vous d'obtenir des données sécurisées et filtrées
-    $nomSport = filter_input(INPUT_POST, 'nomSport', FILTER_SANITIZE_STRING);
+    $nomLieu = filter_input(INPUT_POST, 'nomLieu', FILTER_SANITIZE_STRING);
+    $adresseLieu = filter_input(INPUT_POST, 'adresseLieu', FILTER_SANITIZE_STRING);
+    $villeLieu = filter_input(INPUT_POST, 'villeLieu', FILTER_SANITIZE_STRING);
+    $cpLieu = filter_input(INPUT_POST, 'cpLieu', FILTER_SANITIZE_STRING);
 
-    // Vérifiez si le nom du sport est vide
-    if (empty($nomSport)) {
-        $_SESSION['error'] = "Le nom du sport ne peut pas être vide.";
-        header("Location: add-sport.php");
+    // Vérifiez si le nom du lieu est vide
+    if (empty($nomLieu)) {
+        $_SESSION['error'] = "Le nom du lieu ne peut pas être vide.";
+        header("Location: add-places.php");
         exit();
     }
 
     try {
         // Vérifiez si le sport existe déjà
-        $queryCheck = "SELECT id_sport FROM SPORT WHERE nom_sport = :nomSport";
+        $queryCheck = "SELECT id_lieu FROM LIEU WHERE nom_lieu = :nomLieu AND id_lieu <> :idLieu";
         $statementCheck = $connexion->prepare($queryCheck);
-        $statementCheck->bindParam(":nomSport", $nomSport, PDO::PARAM_STR);
+        $statementCheck->bindParam(":nomLieu", $nomLieu, PDO::PARAM_STR);
+        $statementCheck->bindParam(":idLieu", $id_lieu, PDO::PARAM_INT);
         $statementCheck->execute();
 
         if ($statementCheck->rowCount() > 0) {
-            $_SESSION['error'] = "Le sport existe déjà.";
-            header("Location: add-sport.php");
+            $_SESSION['error'] = "Le lieu existe déjà.";
+            header("Location: add-places.php");
             exit();
         } else {
 
-            // Requête pour ajouter un sport
-            $query = "INSERT INTO SPORT (nom_sport) VALUES (:nomSport)";
+            // Requête pour ajouter un lieu
+            $query = "INSERT INTO LIEU (nom_lieu, adresse_lieu, ville_lieu, cp_lieu) VALUES (:nomLieu, :adresseLieu, :villeLieu, :cpLieu)";
             $statement = $connexion->prepare($query);
-            $statement->bindParam(":nomSport", $nomSport, PDO::PARAM_STR);
+            $statement->bindParam(":nomLieu", $nomLieu, PDO::PARAM_STR);
+            $statement->bindParam(":adresseLieu", $adresseLieu, PDO::PARAM_STR);
+            $statement->bindParam(":villeLieu", $villeLieu, PDO::PARAM_STR);
+            $statement->bindParam(":cpLieu", $cpLieu, PDO::PARAM_STR);
 
             // Exécutez la requête
             if ($statement->execute()) {
-                $_SESSION['success'] = "Le sport a été ajouté avec succès.";
-                header("Location: manage-sports.php");
+                $_SESSION['success'] = "Le lieu a été ajouté avec succès.";
+                header("Location: manage-places.php");
                 exit();
             } else {
-                $_SESSION['error'] = "Erreur lors de l'ajout du sport.";
-                header("Location: add-sport.php");
+                $_SESSION['error'] = "Erreur lors de l'ajout du lieu.";
+                header("Location: add-places.php");
                 exit();
             }
         }
     } catch (PDOException $e) {
         $_SESSION['error'] = "Erreur de base de données : " . $e->getMessage();
-        header("Location: add-sport.php");
+        header("Location: add-places.php");
         exit();
     }
 }
@@ -70,7 +77,7 @@ ini_set("display_errors", 1);
     <link rel="stylesheet" href="../../../css/styles-computer.css">
     <link rel="stylesheet" href="../../../css/styles-responsive.css">
     <link rel="shortcut icon" href="../../../img/favicon-jo-2024.ico" type="image/x-icon">
-    <title>Ajouter un Sport - Jeux Olympiques 2024</title>
+    <title>Ajouter un Lieu - Jeux Olympiques 2024</title>
     <style>
         /* Ajoutez votre style CSS ici */
     </style>
@@ -94,21 +101,32 @@ ini_set("display_errors", 1);
         </nav>
     </header>
     <main>
-        <h1>Ajouter un Sport</h1>
+        <h1>Ajouter un Lieu</h1>
         <?php
         if (isset($_SESSION['error'])) {
             echo '<p style="color: red;">' . $_SESSION['error'] . '</p>';
             unset($_SESSION['error']);
         }
         ?>
-        <form action="add-sport.php" method="post"
-            onsubmit="return confirm('Êtes-vous sûr de vouloir ajouter ce sport?')"">
-            <label for=" nomSport">Nom du Sport :</label>
-            <input type="text" name="nomSport" id="nomSport" required>
-            <input type="submit" value="Ajouter le Sport">
+        <form action="add-places.php" method="post"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir ajouter ce lieu?')">
+
+            <label for=" nomLieu">Nom du Lieu :</label>
+            <input type="text" name="nomLieu" id="nomLieu" required>
+
+            <label for=" adresseLieu">Adresse du Lieu :</label>
+            <input type="text" name="adresseLieu" id="adresseLieu" required>
+
+            <label for=" villeLieu">Ville du Lieu :</label>
+            <input type="text" name="villeLieu" id="villeLieu" required>
+
+            <label for=" cpLieu">Code Postal du Lieu :</label>
+            <input type="text" name="cpLieu" id="cpLieu" required>
+
+            <input type="submit" value="Ajouter le Lieu">
         </form>
         <p class="paragraph-link">
-            <a class="link-home" href="manage-sports.php">Retour à la gestion des sports</a>
+            <a class="link-home" href="manage-places.php">Retour à la gestion des lieux</a>
         </p>
     </main>
     <footer>
